@@ -12,6 +12,10 @@ f2 = @(x) log(x) - sin(x);
 f3 = @(x) exp(cos(x)) - x;
 f4 = @funcionrr;
 
+funciones = {f1, f2, f3, f4};
+nombres = {'f1','f2','f3','funcionrr'};
+n = length(funciones);
+
 % ------------ DIBUJO DE LA CUARTA FUNCIÓN -------------
 
 % x = linspace(1,4,50);
@@ -30,16 +34,12 @@ intervalos = [
 ];
 
 % ---------------- RESULTADOS ----------------
-funciones = {f1, f2, f3, f4};
-nombres = {'f1','f2','f3','funcionrr'};
-n = length(funciones);
-
-% ---------------- RESULTADOS ----------------
 res_budi = zeros(n,4);
 res_incu = zeros(n,4);
 res_new  = zeros(n,4);
 res_rein = zeros(n,4);
 
+%%
 % ---------------- BÚSQUEDA DICOTÓMICA ----------------
 fprintf('==============================\n');
 fprintf('MÉTODO DE BÚSQUEDA DICOTÓMICA\n');
@@ -105,7 +105,6 @@ ddf3= @(x) exp(cos(x)).*(sin(x).^2 - cos(x));
 derivadas = {df1, df2, df3};
 segundas  = {ddf1, ddf2, ddf3};
 
-
 for i = 1:n
 
     % No aplicar a funcionrr
@@ -134,6 +133,38 @@ for i = 1:n
     fprintf('Tiempo = %.6f s\n\n', tiempo);
 end
 
+
+%%
+% ---------------------------------------------------------------------
+% Bloque para ejecutar el metodo de Newton sobre una función numerica
+
+f = funciones{4};
+
+% Primera derivada
+df = @(f, x, h) (f(x + h) - f(x - h)) / (2*h);
+
+% Segunda derivada. Se ha evitado la opción de derivar la derivada para
+% reducir los costes de su ejecución.
+ddf = @(f, x, h) (f(x + h) - 2*f(x) + f(x - h)) / (h^2);
+
+a = intervalos(4,1);
+b = intervalos(4,2);
+x0 = (a + b)/2; % Punto inicial
+
+[xmin, fmin, iter, tiempo] = new_numerical(f, df, ddf, x0, tol);
+res_new(4,:) = [xmin, fmin, iter, tiempo];
+
+fprintf('Función: %s\n', nombres{i});
+fprintf('Intervalo: [%.2f, %.2f]\n', a, b);
+fprintf('xmin = %.6f\n', xmin);
+fprintf('f(xmin) = %.6f\n', fmin);
+fprintf('Iteraciones = %d\n', iter);
+fprintf('Tiempo = %.6f s\n\n', tiempo);
+
+% Fin del bloque
+%------------------------------------------------------------------
+
+%%
 % ---------------- RECTAS INEXACTAS ----------------
 fprintf('==============================\n');
 fprintf('MÉTODO DE RECTAS INEXACTAS\n');
@@ -169,7 +200,6 @@ disp(tabla_budi);
 tabla_incu = array2table(res_incu, ...
     'VariableNames', {'xmin','fmin','iteraciones','tiempo'}, ...
     'RowNames', nombres);
-
 
 disp('--- TABLA RESULTADOS INTERPOLACIÓN CUADRÁTICA ---');
 disp(tabla_incu);
