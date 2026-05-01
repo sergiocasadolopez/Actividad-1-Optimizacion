@@ -1,42 +1,50 @@
-function xmin = budi(f, a, b, tolerancia, epsilon, maxIter)
-% BUSQUEDA DICOTOMICA PARA MINIMO LOCAL
-% Esta funcion supone que el intervalo de entrada contiene el minimo local
-% que se esta buscando
-% f  -> función
-% [a,b] -> intervalo inicial
-% tolerancia  -> tolerancia
-% epsilon -> pequeño desplazamiento
-% maxIter -> máximo iteraciones
+function [xmin, fmin, iter, tiempo] = budi(f, a, b, tol, delta)
+%BUDI Método de búsqueda dicotómica
+%   Encuentra el mínimo local de f en el intervalo [a,b]
+%   suponiendo que f es unimodal en dicho intervalo.
+%
+%   Entradas:
+%       f     -> función
+%       a, b  -> extremos del intervalo (unimodal)
+%       tol   -> tolerancia
+%       delta -> pequeño desplazamiento
+%
+%   Salidas:
+%       xmin   -> aproximación del mínimo
+%       fmin   -> valor de la función en xmin
+%       iter   -> número de iteraciones
+%       tiempo -> tiempo de ejecución
 
+% ---------------- INICIALIZACIÓN ----------------
+tic;
 iter = 0;
+maxIter = 1000;   % Por seguridad, para que no esté realizando iteraciones infinitas
 
-while (b - a) > tolerancia && iter < maxIter
+% ---------------- BUCLE PRINCIPAL ----------------
+while (b - a) > tol && iter < maxIter
     
-    %Punto medio del intervalo
     m = (a + b)/2;
     
-    %Extremos del intervalo
-    x1 = m - epsilon/2;
-    x2 = m + epsilon/2;
+    x1 = m - delta;
+    x2 = m + delta;
     
-    % Evaluar función en los puntos x1 y x2
+    % Evaluaciones de la función en los extremos del intervalo
     f1 = f(x1);
     f2 = f(x2);
-
-    if f1<f2
-        a = x1; % Actualizar el límite inferior
+    
+    % Modificación del intervalo
+    if f1 < f2
+        b = x2;
     else
-        b = x2; % Actualizar el límite superior
+        a = x1;
     end
     
-    %Conteo de iteraciones
     iter = iter + 1;
 end
 
+% ---------------- RESULTADO ----------------
 xmin = (a + b)/2;
-
-fprintf('Mínimo aproximado en x = %.6f\n', xmin);
-fprintf('Valor f(x) = %.6f\n', f(xmin));
-fprintf('Iteraciones = %d\n', iter);
+fmin = f(xmin);
+tiempo = toc;
 
 end

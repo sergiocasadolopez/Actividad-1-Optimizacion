@@ -5,7 +5,7 @@ function f = funcionrr ( x )
     
     options=odeset('RelTol',1e-13,'AbsTol',1e-13);
     
-    [ts,xs]=ode45(@campo_pendulo,t,xini,options);
+    [~,xs]=ode45(@campo_pendulo,t,xini,options);
     
    f=xs(end,1);
 
