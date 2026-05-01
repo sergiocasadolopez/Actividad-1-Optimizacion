@@ -16,7 +16,7 @@ function [xmin, fmin, iter, tiempo] = budi(f, a, b, tol, delta)
 %       tiempo -> tiempo de ejecución
 
 % ---------------- INICIALIZACIÓN ----------------
-tic;
+tic; %Cronometro
 iter = 0;
 maxIter = 1000;   % Por seguridad, para que no esté realizando iteraciones infinitas
 
